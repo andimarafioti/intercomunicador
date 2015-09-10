@@ -1,5 +1,5 @@
 #!/bin/bash
 
-sudo /sbin/bin add default gw 192.168.7.1
+sudo /sbin/route add default gw 192.168.7.2
 
 echo "Internet added securely"
