@@ -1,13 +1,8 @@
 import Queue
-import threading
 import traceback
 
-from PySide.QtCore import QObject, Signal, Qt, QThread
-from PySide.QtGui import QApplication
-
+from PySide.QtCore import QObject, Signal, Qt
 from Shiboken import shiboken
-
-from helpers.emit_sentinel import pyside_none_deco, pyside_none_wrap
 from helpers.worker.worker import Worker
 
 
@@ -28,7 +23,7 @@ class LazyLoader(QObject):
 			valueGetterParams = []
 
 		if defaultVal is not None:
-			self.SetValue.emit(*pyside_none_wrap(valueSetter, defaultVal, None))
+			self.SetValue.emit(valueSetter, defaultVal, None)
 
 		self._tasks.put((valueSetter, defaultVal, valueGetter, valueGetterParams, validCheckFunction))
 
@@ -40,19 +35,17 @@ class LazyLoader(QObject):
 				# Test that the setter is still alive, and isn't duplicate:
 				if self._isSetterValid(setter, validcheck_function):
 					res = data_func(*data_params)
-					self.SetValue.emit(*pyside_none_wrap(setter, res, validcheck_function))
+					self.SetValue.emit(setter, res, validcheck_function)
 
 				self._tasks.task_done()
 			except Exception, e:
 				print "[ERROR - LAZYLOADER] Excepcion: {}".format(e)
 				traceback.print_exc()
 
-
-	@pyside_none_deco
 	def _setValue(self, setter, value, setterValidator):
 		if self._isSetterValid(setter, setterValidator):
 			setter(value)
 
 	def _isSetterValid(self, setter, validcheck_function=None):
 		return not hasattr(setter, '__self__') or (shiboken.isValid(setter.__self__) \
-			   and (not validcheck_function or validcheck_function()))
+								and (not validcheck_function or validcheck_function()))

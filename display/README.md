@@ -1,1 +1,0 @@
-LCD driver based on http://www.recantha.co.uk/blog/?p=4849

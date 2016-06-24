@@ -1,7 +1,7 @@
 # coding: utf-8
 from time import sleep
 # from Intercomunicador import dspRecord, dspPlay
-from display.lcddriver import lcd
+from gui.display import lcd
 from gui.menus.Initial.initialMenu import InitialMenu
 from gui.menus.configuration.configurationMenu import ConfigurationMenu
 
